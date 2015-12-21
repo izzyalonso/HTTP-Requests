@@ -1,1 +1,1 @@
-include ':http-requests'
+include ':http-requests', ':volley'
