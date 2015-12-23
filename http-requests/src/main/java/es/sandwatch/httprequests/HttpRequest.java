@@ -37,8 +37,6 @@ import java.util.Map;
 public final class HttpRequest{
     private static final String TAG = "HttpRequest";
 
-    private static final int MAX_REQUEST_CODE = 999999;
-
     private static final int DEFAULT_REQUEST_TIMEOUT = 10*1000;
     private static final int DEFAULT_REQUEST_RETRIES = 0;
     private static final float DEFAULT_RETRY_BACKOFF = 1.5f;
@@ -60,9 +58,6 @@ public final class HttpRequest{
     //requestCode -> HttpRequest
     private static Map<Integer, HttpRequest> sRequestMap;
     private static RequestQueue sRequestQueue;
-
-    //Need to keep track of the last request code delivered to avoid collisions
-    private static int sLastRequestCode = 0;
 
 
     /**
@@ -151,18 +146,6 @@ public final class HttpRequest{
         return sRequestHeaders.remove(header) != null;
     }
 
-    /**
-     * Generates a unique request code.
-     *
-     * @return the request code.
-     */
-    private static int generateRequestCode(){
-        if (sLastRequestCode >= MAX_REQUEST_CODE){
-            sLastRequestCode = 0;
-        }
-        return ++sLastRequestCode;
-    }
-
     public static int get(@NonNull RequestCallback callback, @NonNull String url){
         return requestWithoutBody(Request.Method.GET, callback, url, sRequestTimeout);
     }
@@ -249,7 +232,7 @@ public final class HttpRequest{
         }
 
         //Generate the request code
-        final int requestCode = generateRequestCode();
+        final int requestCode = RequestCodeGenerator.generate();
 
         //Create the request object and put it in the map
         HttpRequest request = new HttpRequest(callback);
@@ -328,7 +311,7 @@ public final class HttpRequest{
         }
 
         //Generate the request code
-        final int requestCode = generateRequestCode();
+        final int requestCode = RequestCodeGenerator.generate();
 
         //Create the request object and put it in the map
         HttpRequest request = new HttpRequest(callback, body);
