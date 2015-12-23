@@ -16,28 +16,46 @@ import com.android.volley.Response;
 import com.android.volley.RetryPolicy;
 import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
 
 /**
- * Utility helper class to make network requests to our REST API.
+ * Utility helper class to make HTTP requests.
  *
  * @author Ismael Alonso
  * @version 1.0.0
  */
 public final class HttpRequest{
+    private static final String TAG = "HttpRequest";
+
     private static final int MAX_REQUEST_CODE = 999999;
 
     private static final int DEFAULT_REQUEST_TIMEOUT = 10*1000;
-    private static final int DEFAULT_MAX_RETRIES = 4;
+    private static final int DEFAULT_REQUEST_RETRIES = 0;
     private static final float DEFAULT_RETRY_BACKOFF = 1.5f;
 
+    private static final String DEFAULT_ENCODING = "UTF-8";
+
+
+    //Retry policy values
+    private static int sRequestTimeout = DEFAULT_REQUEST_TIMEOUT;
+    private static int sRequestRetries = DEFAULT_REQUEST_RETRIES;
+    private static float sRetryBackoff = DEFAULT_RETRY_BACKOFF;
+
+    //Encoding
+    private static String sEncoding = DEFAULT_ENCODING;
+
+    //Request headers
+    private static Map<String, String> sRequestHeaders;
 
     //requestCode -> HttpRequest
     private static Map<Integer, HttpRequest> sRequestMap;
@@ -48,17 +66,89 @@ public final class HttpRequest{
 
 
     /**
+     * Overrides the existing request timeout value.
+     *
+     * @param requestTimeout the new request timeout value in milliseconds.
+     */
+    public static void setRequestTimeout(int requestTimeout){
+        sRequestTimeout = requestTimeout;
+    }
+
+    /**
+     * Overrides the existing maximum retry number.
+     *
+     * @param requestRetries the new maximum number of retries.
+     */
+    public static void setRequestRetries(int requestRetries){
+        sRequestRetries = requestRetries;
+    }
+
+    /**
+     * Overrides the existing backoff value. The backoff is the increase in the timeout value
+     * after a request fails. When that happens, the new request timeout is calculated as the
+     * product of the current request timeout times the backoff.
+     *
+     * @param retryBackoff the timeout backoff.
+     */
+    public static void setRetryBackoff(float retryBackoff){
+        sRetryBackoff = retryBackoff;
+    }
+
+    /**
+     * Overrides the existing charset used to parse the network response.
+     *
+     * @param encoding the name of the new encoding to be used.
+     */
+    public static void setEncoding(String encoding){
+        if (Charset.availableCharsets().containsKey(encoding)){
+            sEncoding = encoding;
+        }
+    }
+
+    /**
      * Initialises the static fields of the class if necessary.
      *
      * @param context a reference to the context.
      */
-    private static void init(@NonNull Context context){
+    public static void init(@NonNull Context context){
+        if (sRequestHeaders != null){
+            sRequestHeaders = new HashMap<>();
+        }
         if (sRequestMap == null){
             sRequestMap = new HashMap<>();
         }
         if (sRequestQueue == null){
             sRequestQueue = Volley.newRequestQueue(context);
         }
+    }
+
+    /**
+     * Tells whether the system has been initialised.
+     *
+     * @return true if the system is initialised, false otherwise.
+     */
+    private static boolean isInitialised(){
+        return sRequestHeaders != null && sRequestMap != null && sRequestQueue != null;
+    }
+
+    /**
+     * Adds a header to the header list to be sent with every request.
+     *
+     * @param header the header name.
+     * @param value the value of the header.
+     */
+    public static void addHeader(String header, String value){
+        sRequestHeaders.put(header, value);
+    }
+
+    /**
+     * Removes a header from the header list to be sent with every request.
+     *
+     * @param header the header name.
+     * @return true if the header was removed, false otherwise.
+     */
+    public static boolean removeHeader(String header){
+        return sRequestHeaders.remove(header) != null;
     }
 
     /**
@@ -73,59 +163,48 @@ public final class HttpRequest{
         return ++sLastRequestCode;
     }
 
-    public static int get(@NonNull Context context, @NonNull RequestCallback callback,
-                          @NonNull String url, @NonNull String token){
-
-        return requestWithoutBody(Request.Method.GET, context, callback, url, token,
-                DEFAULT_REQUEST_TIMEOUT);
+    public static int get(@NonNull RequestCallback callback, @NonNull String url){
+        return requestWithoutBody(Request.Method.GET, callback, url, sRequestTimeout);
     }
 
-    public static int get(@NonNull Context context, @NonNull RequestCallback callback,
-                          @NonNull String url, @NonNull String token, int timeout){
-
-        return requestWithoutBody(Request.Method.GET, context, callback, url, token, timeout);
+    public static int get(@NonNull RequestCallback callback, @NonNull String url, int timeout){
+        return requestWithoutBody(Request.Method.GET, callback, url, timeout);
     }
 
-    public static int post(@NonNull Context context, @Nullable RequestCallback callback,
-                           @NonNull String url, @NonNull String token, @NonNull JSONObject body){
+    public static int post(@Nullable RequestCallback callback, @NonNull String url,
+                           @NonNull JSONObject body){
 
-        return requestWithBody(Request.Method.POST, context, callback, url, token, body,
-                DEFAULT_REQUEST_TIMEOUT);
+        return requestWithBody(Request.Method.POST, callback, url, body, sRequestTimeout);
     }
 
-    public static int post(@NonNull Context context, @Nullable RequestCallback callback,
-                           @NonNull String url, @NonNull String token,
+    public static int post(@Nullable RequestCallback callback, @NonNull String url,
                            @NonNull JSONObject body, int timeout){
 
-        return requestWithBody(Request.Method.POST, context, callback, url, token, body, timeout);
+        return requestWithBody(Request.Method.POST, callback, url, body, timeout);
     }
 
-    public static int put(@NonNull Context context, @Nullable RequestCallback callback,
-                          @NonNull String url, @NonNull String token, @NonNull JSONObject body){
+    public static int put(@Nullable RequestCallback callback, @NonNull String url,
+                          @NonNull JSONObject body){
 
-        return requestWithBody(Request.Method.PUT, context, callback, url, token, body,
-                DEFAULT_REQUEST_TIMEOUT);
+        return requestWithBody(Request.Method.PUT, callback, url, body, sRequestTimeout);
     }
 
-    public static int put(@NonNull Context context, @Nullable RequestCallback callback,
-                          @NonNull String url, @NonNull String token,
+    public static int put(@Nullable RequestCallback callback, @NonNull String url,
                           @NonNull JSONObject body, int timeout){
 
-        return requestWithBody(Request.Method.PUT, context, callback, url, token, body, timeout);
+        return requestWithBody(Request.Method.PUT, callback, url, body, timeout);
     }
 
-    public static int delete(@NonNull Context context, @Nullable RequestCallback callback,
-                             @NonNull String url, @NonNull String token, @NonNull JSONObject body){
+    public static int delete(@Nullable RequestCallback callback, @NonNull String url,
+                             @NonNull JSONObject body){
 
-        return requestWithBody(Request.Method.DELETE, context, callback, url, token, body,
-                DEFAULT_REQUEST_TIMEOUT);
+        return requestWithBody(Request.Method.DELETE, callback, url, body, sRequestTimeout);
     }
 
-    public static int delete(@NonNull Context context, @Nullable RequestCallback callback,
-                             @NonNull String url, @NonNull String token,
+    public static int delete(@Nullable RequestCallback callback, @NonNull String url,
                              @NonNull JSONObject body, int timeout){
 
-        return requestWithBody(Request.Method.DELETE, context, callback, url, token, body, timeout);
+        return requestWithBody(Request.Method.DELETE, callback, url, body, timeout);
     }
 
     /**
@@ -156,23 +235,24 @@ public final class HttpRequest{
      * Creates a request without a body.
      *
      * @param method the HTTP method of this request.
-     * @param context a reference to the context.
      * @param callback the callback object.
      * @param url the url to make the request to.
-     * @param token the user's authentication token.
      * @param timeout a request timeout value.
      * @return the request code.
      */
-    private static int requestWithoutBody(int method, @NonNull Context context,
-                                          @Nullable RequestCallback callback, @NonNull String url,
-                                          @NonNull String token, int timeout){
+    private static int requestWithoutBody(int method, @Nullable RequestCallback callback,
+                                          @NonNull String url, int timeout){
 
-        //Init and generate the request code
-        init(context);
+        //If the class has not yet been initialised the request can't be carried out
+        if (!isInitialised()){
+            return -1;
+        }
+
+        //Generate the request code
         final int requestCode = generateRequestCode();
 
         //Create the request object and put it in the map
-        HttpRequest request = new HttpRequest(callback, token);
+        HttpRequest request = new HttpRequest(callback);
         sRequestMap.put(requestCode, request);
 
         //Request a string response from the provided URL
@@ -201,22 +281,23 @@ public final class HttpRequest{
         ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError{
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Accept", "application/json");
-                String token = sRequestMap.get(requestCode).mToken;
-                if (!token.isEmpty()){
-                    headers.put("Authorization", "Token " + token);
+                return sRequestHeaders;
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response){
+                try{
+                    String utf8String = new String(response.data, sEncoding);
+                    return Response.success(utf8String, HttpHeaderParser.parseCacheHeaders(response));
                 }
-                return headers;
+                catch (UnsupportedEncodingException uex){
+                    return Response.error(new VolleyError("Internal error"));
+                }
             }
         };
 
         //Create and set the retry policy
-        RetryPolicy retryPolicy = new DefaultRetryPolicy(
-                timeout,
-                DEFAULT_MAX_RETRIES,
-                DEFAULT_RETRY_BACKOFF
-        );
+        RetryPolicy retryPolicy = new DefaultRetryPolicy(timeout, sRequestRetries, sRetryBackoff);
         volleyRequest.setRetryPolicy(retryPolicy);
 
         //Set the volley request to the request object
@@ -232,25 +313,25 @@ public final class HttpRequest{
      * Creates a request with a body.
      *
      * @param method the HTTP method of this request.
-     * @param context a reference to the context.
      * @param callback the callback object.
      * @param url the url to make the request to.
-     * @param token the user's authentication token.
      * @param body the body of the request.
      * @param timeout a request timeout value.
      * @return the request code.
      */
-    private static int requestWithBody(int method, @NonNull Context context,
-                                       @Nullable RequestCallback callback,
-                                       @NonNull String url, @NonNull String token,
-                                       @NonNull JSONObject body, int timeout){
+    private static int requestWithBody(int method, @Nullable RequestCallback callback,
+                                       @NonNull String url, @NonNull JSONObject body, int timeout){
 
-        //Init and generate the request code
-        init(context);
+        //If the class has not yet been initialised the request can't be carried out
+        if (!isInitialised()){
+            return -1;
+        }
+
+        //Generate the request code
         final int requestCode = generateRequestCode();
 
         //Create the request object and put it in the map
-        HttpRequest request = new HttpRequest(callback, token, body);
+        HttpRequest request = new HttpRequest(callback, body);
         sRequestMap.put(requestCode, request);
 
         //Request a string response from the provided URL
@@ -279,14 +360,7 @@ public final class HttpRequest{
         ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError{
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Accept", "application/json");
-                headers.put("Content-type", "application/json");
-                String token = sRequestMap.get(requestCode).mToken;
-                if (!token.isEmpty()){
-                    headers.put("Authorization", "Token " + token);
-                }
-                return headers;
+                return sRequestHeaders;
             }
 
             @Override
@@ -298,12 +372,23 @@ public final class HttpRequest{
             public byte[] getBody() throws AuthFailureError{
                 return sRequestMap.get(requestCode).mBody.toString().getBytes();
             }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response){
+                try{
+                    String utf8String = new String(response.data, sEncoding);
+                    return Response.success(utf8String, HttpHeaderParser.parseCacheHeaders(response));
+                }
+                catch (UnsupportedEncodingException uex){
+                    return Response.error(new VolleyError("Internal error"));
+                }
+            }
         };
 
         //Create and set the retry policy
         RetryPolicy retryPolicy = new DefaultRetryPolicy(
                 timeout,
-                DEFAULT_MAX_RETRIES,
+                DEFAULT_REQUEST_RETRIES,
                 DEFAULT_RETRY_BACKOFF
         );
         volleyRequest.setRetryPolicy(retryPolicy);
@@ -319,15 +404,15 @@ public final class HttpRequest{
 
 
     private static void handleError(int requestCode, VolleyError error){
-        Log.d("HttpRequest", error.toString());
+        Log.d(TAG, error.toString());
         NetworkResponse response = error.networkResponse;
         String errorMessage = "";
         if (error instanceof ServerError){
             if (response != null && response.data != null){
                 errorMessage = new String(response.data);
-                Log.d("HttpRequest", "Server error");
-                Log.d("HttpRequest", "Error code: " + response.statusCode);
-                Log.d("HttpRequest", "Error: " + errorMessage);
+                Log.d(TAG, "Server error");
+                Log.d(TAG, "Error code: " + response.statusCode);
+                Log.d(TAG, "Error: " + errorMessage);
             }
         }
         else if (error instanceof NoConnectionError || error instanceof NetworkError){
@@ -349,7 +434,6 @@ public final class HttpRequest{
      *----------------------------------------------*/
 
     private RequestCallback mCallback;
-    private String mToken;
     private JSONObject mBody;
 
     private StringRequest mRequest;
@@ -359,24 +443,19 @@ public final class HttpRequest{
      * Constructor for requests without body.
      *
      * @param callback the callback object for this request.
-     * @param token the user authentication token.
      */
-    private HttpRequest(@Nullable RequestCallback callback, @NonNull String token){
-        this(callback, token, new JSONObject());
+    private HttpRequest(@Nullable RequestCallback callback){
+        this(callback, new JSONObject());
     }
 
     /**
      * Constructor for requests with a body.
      *
      * @param callback the callback object for this request.
-     * @param token the user authentication token.
      * @param body the body of the request.
      */
-    private HttpRequest(@Nullable RequestCallback callback, @NonNull String token,
-                           @NonNull JSONObject body){
-
+    private HttpRequest(@Nullable RequestCallback callback, @NonNull JSONObject body){
         mCallback = callback;
-        mToken = token;
         mBody = body;
     }
 
@@ -388,11 +467,4 @@ public final class HttpRequest{
     private void setRequest(@NonNull StringRequest request){
         mRequest = request;
     }
-
-
-    /*private static final class DeleteWithBodyHttpClientStack extends HttpClientStack{
-        public DeleteWithBodyHttpClientStack(HttpClient client){
-            super(client);
-        }
-    }*/
 }
