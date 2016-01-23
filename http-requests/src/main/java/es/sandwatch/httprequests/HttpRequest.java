@@ -145,46 +145,49 @@ public final class HttpRequest{
         return sRequestHeaders.remove(header) != null;
     }
 
+
+    /*----------------------------------------------------------*
+     * HELPER METHODS. THESE CREATE REQUESTS OF SPECIFIC TYPES. *
+     *----------------------------------------------------------*/
+
     public static int get(@NonNull RequestCallback callback, @NonNull String url){
-        return request(Request.Method.GET, callback, url, null, sRequestTimeout);
+        return request(Method.GET, callback, url, null, sRequestTimeout);
     }
 
     public static int get(@NonNull RequestCallback callback, @NonNull String url, int timeout){
-        return request(Request.Method.GET, callback, url, null, timeout);
+        return request(Method.GET, callback, url, null, timeout);
     }
 
     public static int post(@Nullable RequestCallback callback, @NonNull String url,
                            @NonNull JSONObject body){
 
-        return request(Request.Method.POST, callback, url, body, sRequestTimeout);
+        return request(Method.POST, callback, url, body, sRequestTimeout);
     }
 
     public static int post(@Nullable RequestCallback callback, @NonNull String url,
                            @NonNull JSONObject body, int timeout){
 
-        return request(Request.Method.POST, callback, url, body, timeout);
+        return request(Method.POST, callback, url, body, timeout);
     }
 
     public static int put(@Nullable RequestCallback callback, @NonNull String url,
                           @NonNull JSONObject body){
 
-        return request(Request.Method.PUT, callback, url, body, sRequestTimeout);
+        return request(Method.PUT, callback, url, body, sRequestTimeout);
     }
 
     public static int put(@Nullable RequestCallback callback, @NonNull String url,
                           @NonNull JSONObject body, int timeout){
 
-        return request(Request.Method.PUT, callback, url, body, timeout);
+        return request(Method.PUT, callback, url, body, timeout);
     }
 
     public static int delete(@Nullable RequestCallback callback, @NonNull String url){
-
-        return request(Request.Method.DELETE, callback, url, null, sRequestTimeout);
+        return request(Method.DELETE, callback, url, null, sRequestTimeout);
     }
 
     public static int delete(@Nullable RequestCallback callback, @NonNull String url, int timeout){
-
-        return request(Request.Method.DELETE, callback, url, null, timeout);
+        return request(Method.DELETE, callback, url, null, timeout);
     }
 
     /**
@@ -219,7 +222,7 @@ public final class HttpRequest{
      * @param body the body of the request.
      * @return the request code.
      */
-    static int request(int method, @Nullable RequestCallback callback, @NonNull String url,
+    public static int request(Method method, @Nullable RequestCallback callback, @NonNull String url,
                        @Nullable JSONObject body){
 
         return request(method, callback, url, body, sRequestTimeout);
@@ -235,7 +238,7 @@ public final class HttpRequest{
      * @param timeout a request timeout value.
      * @return the request code.
      */
-    static int request(int method, @Nullable RequestCallback callback, @NonNull String url,
+    public static int request(Method method, @Nullable RequestCallback callback, @NonNull String url,
                        @Nullable JSONObject body, int timeout){
 
         //If the class has not yet been initialised the request can't be carried out
@@ -253,7 +256,7 @@ public final class HttpRequest{
         //Request a string response from the provided URL
         StringRequest volleyRequest = new StringRequest(
                 //Method and url
-                method, url,
+                method.getMethod(), url,
 
                 //Response listener, called if the request succeeds
                 new Response.Listener<String>(){
@@ -371,6 +374,41 @@ public final class HttpRequest{
      */
     private void setRequest(@NonNull StringRequest request){
         mRequest = request;
+    }
+
+
+    /**
+     * Enumeration containing all the allowed methods.
+     *
+     * @author Ismael Alonso
+     * @version 1.0.0
+     */
+    public enum Method{
+        GET(Request.Method.GET),
+        POST(Request.Method.POST),
+        PUT(Request.Method.PUT),
+        DELETE(Request.Method.DELETE);
+
+        int mMethod;
+
+
+        /**
+         * Constructor. Sets the method mapping so that Volley can understand it.
+         *
+         * @param method Volley's representation of the method.
+         */
+        Method(int method){
+            mMethod = method;
+        }
+
+        /**
+         * Getter for the Volley's representation of the method.
+         *
+         * @return Volley's representation of the method.
+         */
+        private int getMethod(){
+            return mMethod;
+        }
     }
 
 

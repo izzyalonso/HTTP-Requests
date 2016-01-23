@@ -7,7 +7,7 @@ package es.sandwatch.httprequests;
  * @author Ismael Alonso
  * @version 1.0.0
  */
-class RequestCodeGenerator{
+abstract class RequestCodeGenerator{
     private static final int MAX_REQUEST_CODE = 999999;
 
     //Need to keep track of the last request code delivered to avoid collisions

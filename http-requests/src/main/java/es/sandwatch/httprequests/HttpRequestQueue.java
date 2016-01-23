@@ -18,7 +18,7 @@ import java.util.Queue;
  * @author Ismael Alonso
  * @version 1.0.0
  */
-public class HttpRequestQueue implements HttpRequest.RequestCallback{
+public final class HttpRequestQueue implements HttpRequest.RequestCallback{
     private Queue<RequestModel> mQueue;
     private List<String> mResults;
     private RequestQueueCallback mCallback;
@@ -28,6 +28,11 @@ public class HttpRequestQueue implements HttpRequest.RequestCallback{
     private int mCurrentRequest;
 
 
+    /**
+     * Constructor.
+     *
+     * @param callback the callback object.
+     */
     public HttpRequestQueue(@NonNull RequestQueueCallback callback){
         mQueue = new LinkedList<>();
         mResults = new ArrayList<>();
