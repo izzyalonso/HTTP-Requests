@@ -101,9 +101,6 @@ public final class HttpRequest{
      * @param context a reference to the context.
      */
     public static void init(@NonNull Context context){
-        if (sRequestHeaders != null){
-            sRequestHeaders = new HashMap<>();
-        }
         if (sRequestMap == null){
             sRequestMap = new HashMap<>();
         }
@@ -121,6 +118,12 @@ public final class HttpRequest{
         return sRequestHeaders != null && sRequestMap != null && sRequestQueue != null;
     }
 
+    private static void checkInitialisation(){
+        if (!isInitialised()){
+            throw new IllegalStateException("HttpRequest Needs to be initialised before used.");
+        }
+    }
+
     /**
      * Adds a header to the header list to be sent with every request.
      *
@@ -128,6 +131,9 @@ public final class HttpRequest{
      * @param value the value of the header.
      */
     public static void addHeader(String header, String value){
+        if (sRequestHeaders == null){
+            sRequestHeaders = new HashMap<>();
+        }
         sRequestHeaders.put(header, value);
     }
 
@@ -138,7 +144,7 @@ public final class HttpRequest{
      * @return true if the header was removed, false otherwise.
      */
     public static boolean removeHeader(String header){
-        return sRequestHeaders.remove(header) != null;
+        return sRequestHeaders != null && sRequestHeaders.remove(header) != null;
     }
 
 
@@ -301,10 +307,9 @@ public final class HttpRequest{
     public static int request(Method method, @Nullable RequestCallback callback, @NonNull String url,
                               @Nullable JSONObject body, int timeout){
 
-        //If the class has not yet been initialised the request can't be carried out
-        if (!isInitialised()){
-            return -1;
-        }
+        //If the class has not yet been initialised the request can't be carried out and
+        //  an Exception is thrown
+        checkInitialisation();
 
         //Generate the request code
         final int requestCode = RequestCodeGenerator.generate();
