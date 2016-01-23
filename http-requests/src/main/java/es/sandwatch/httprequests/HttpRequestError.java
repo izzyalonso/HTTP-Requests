@@ -10,7 +10,10 @@ import com.android.volley.VolleyError;
 
 
 /**
- * Created by isma on 12/25/15.
+ * Contains all the information about a request error.
+ *
+ * @author Ismael Alonso
+ * @version 1.0.0
  */
 public class HttpRequestError{
     private static final String TAG = "HttpRequestError";
@@ -24,6 +27,11 @@ public class HttpRequestError{
     private final int mStatusCode;
 
 
+    /**
+     * Constructor. Extracts the relevant information from a VolleyError.
+     *
+     * @param error the source volley error.
+     */
     HttpRequestError(VolleyError error){
         Log.d(TAG, error.toString());
         NetworkResponse response = error.networkResponse;
@@ -45,18 +53,38 @@ public class HttpRequestError{
         }
     }
 
+    /**
+     * Determines whether this error is a server error.
+     *
+     * @return true if it is a server error, false otherwise.
+     */
     public boolean isServerError(){
         return mErrorType == ERROR_TYPE_SERVER;
     }
 
+    /**
+     * Determines whether this error is a network error.
+     *
+     * @return true if this is a network error, false otherwise.
+     */
     public boolean isNetworkError(){
         return mErrorType == ERROR_TYPE_NETWORK;
     }
 
+    /**
+     * Gets the message of this error.
+     *
+     * @return the message of this error.
+     */
     public String getMessage(){
         return mMessage;
     }
 
+    /**
+     * Gets the HTTP status code if this is a server error.
+     *
+     * @return the HTTP status code of the server error if this is a server error, -1 otherwise.
+     */
     public int returnStatusCode(){
         return mStatusCode;
     }
