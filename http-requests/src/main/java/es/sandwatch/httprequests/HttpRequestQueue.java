@@ -43,49 +43,49 @@ public final class HttpRequestQueue implements HttpRequest.RequestCallback{
 
     public void addGet(@NonNull String url){
         if (!mExecuted){
-            mQueue.add(new RequestModel(Request.Method.GET, url));
+            mQueue.add(new RequestModel(HttpRequest.Method.GET, url));
         }
     }
 
     public void addGet(@NonNull String url, int timeout){
         if (!mExecuted){
-            mQueue.add(new RequestModel(Request.Method.GET, url, timeout));
+            mQueue.add(new RequestModel(HttpRequest.Method.GET, url, timeout));
         }
     }
 
     public void addPost(@NonNull String url, @NonNull JSONObject body){
         if (!mExecuted){
-            mQueue.add(new RequestModel(Request.Method.POST, url, body));
+            mQueue.add(new RequestModel(HttpRequest.Method.POST, url, body));
         }
     }
 
     public void addPost(@NonNull String url, @NonNull JSONObject body, int timeout){
         if (!mExecuted){
-            mQueue.add(new RequestModel(Request.Method.POST, url, body, timeout));
+            mQueue.add(new RequestModel(HttpRequest.Method.POST, url, body, timeout));
         }
     }
 
     public void addPut(@NonNull String url, @NonNull JSONObject body){
         if (!mExecuted){
-            mQueue.add(new RequestModel(Request.Method.PUT, url, body));
+            mQueue.add(new RequestModel(HttpRequest.Method.PUT, url, body));
         }
     }
 
     public void addPut(@NonNull String url, @NonNull JSONObject body, int timeout){
         if (!mExecuted){
-            mQueue.add(new RequestModel(Request.Method.PUT, url, body, timeout));
+            mQueue.add(new RequestModel(HttpRequest.Method.PUT, url, body, timeout));
         }
     }
 
     public void addDelete(@NonNull String url){
         if (!mExecuted){
-            mQueue.add(new RequestModel(Request.Method.POST, url));
+            mQueue.add(new RequestModel(HttpRequest.Method.POST, url));
         }
     }
 
     public void addDelete(@NonNull String url, int timeout){
         if (!mExecuted){
-            mQueue.add(new RequestModel(Request.Method.POST, url, timeout));
+            mQueue.add(new RequestModel(HttpRequest.Method.POST, url, timeout));
         }
     }
 
@@ -128,25 +128,25 @@ public final class HttpRequestQueue implements HttpRequest.RequestCallback{
 
 
     private class RequestModel{
-        private final int mMethod;
+        private final HttpRequest.Method mMethod;
         private final String mUrl;
         private final JSONObject mBody;
         private final int mTimeout;
 
 
-        private RequestModel(int method, String url){
+        private RequestModel(HttpRequest.Method method, String url){
             this(method, url, new JSONObject(), -1);
         }
 
-        private RequestModel(int method, String url, int timeout){
+        private RequestModel(HttpRequest.Method method, String url, int timeout){
             this(method, url, new JSONObject(), timeout);
         }
 
-        private RequestModel(int method, String url, JSONObject body){
+        private RequestModel(HttpRequest.Method method, String url, JSONObject body){
             this(method, url, body, -1);
         }
 
-        private RequestModel(int method, String url, JSONObject body, int timeout){
+        private RequestModel(HttpRequest.Method method, String url, JSONObject body, int timeout){
             mMethod = method;
             mUrl = url;
             mBody = body;
