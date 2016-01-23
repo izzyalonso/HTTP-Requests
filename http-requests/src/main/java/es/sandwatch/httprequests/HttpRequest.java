@@ -96,7 +96,7 @@ public final class HttpRequest{
     }
 
     /**
-     * Initialises the static fields of the class if necessary.
+     * Initialises the library.
      *
      * @param context a reference to the context.
      */
@@ -118,6 +118,9 @@ public final class HttpRequest{
         return sRequestHeaders != null && sRequestMap != null && sRequestQueue != null;
     }
 
+    /**
+     * Checks whether the class has been initialised, if not, throws an exception.
+     */
     private static void checkInitialisation(){
         if (!isInitialised()){
             throw new IllegalStateException("HttpRequest Needs to be initialised before used.");
