@@ -49,6 +49,7 @@ public final class HttpRequest{
 
     //Request headers
     private static Map<String, String> sRequestHeaders;
+    private static Map<String, String> sRequestUrlParams;
 
     //requestCode -> HttpRequest
     private static Map<Integer, HttpRequest> sRequestMap;
@@ -148,6 +149,29 @@ public final class HttpRequest{
      */
     public static boolean removeHeader(String header){
         return sRequestHeaders != null && sRequestHeaders.remove(header) != null;
+    }
+
+    /**
+     * Adds a parameter to the URLs to send requests to.
+     *
+     * @param parameter the key of the parameter.
+     * @param value the value of the parameter.
+     */
+    public static void addUrlParameter(String parameter, String value){
+        if (sRequestUrlParams == null){
+            sRequestUrlParams = new HashMap<>();
+        }
+        sRequestUrlParams.put(parameter, value);
+    }
+
+    /**
+     * Removes a parameter from the list of parameters to add to the URLs to send requests to.
+     *
+     * @param parameter the key of the parameter.
+     * @return true if the parameter was removed, false otherwise.
+     */
+    public static boolean removeUrlParameter(String parameter){
+        return sRequestUrlParams != null && sRequestUrlParams.remove(parameter) != null;
     }
 
 
@@ -321,6 +345,8 @@ public final class HttpRequest{
         HttpRequest request = new HttpRequest(callback, body);
         sRequestMap.put(requestCode, request);
 
+        url = processUrl(url);
+
         //Request a string response from the provided URL
         StringRequest volleyRequest = new StringRequest(
                 //Method and url
@@ -382,6 +408,20 @@ public final class HttpRequest{
         sRequestQueue.add(volleyRequest);
 
         return requestCode;
+    }
+
+    /**
+     * Adds the parameters to the URL
+     *
+     * @param url the url to append the parameters to.
+     * @return the processed url.
+     */
+    private static String processUrl(@NonNull String url){
+        for (Map.Entry<String, String> parameter:sRequestUrlParams.entrySet()){
+            url += !url.contains("?") ? "?" :  "&";
+            url += parameter.getKey() + "=" + parameter.getValue();
+        }
+        return url;
     }
 
     /**
