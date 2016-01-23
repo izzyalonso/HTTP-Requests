@@ -3,17 +3,13 @@ package es.sandwatch.httprequests;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkError;
 import com.android.volley.NetworkResponse;
-import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
@@ -318,27 +314,9 @@ public final class HttpRequest{
 
 
     private static void handleError(int requestCode, VolleyError error){
-        Log.d(TAG, error.toString());
-        NetworkResponse response = error.networkResponse;
-        String errorMessage = "";
-        if (error instanceof ServerError){
-            if (response != null && response.data != null){
-                errorMessage = new String(response.data);
-                Log.d(TAG, "Server error");
-                Log.d(TAG, "Error code: " + response.statusCode);
-                Log.d(TAG, "Error: " + errorMessage);
-            }
-        }
-        else if (error instanceof NoConnectionError || error instanceof NetworkError){
-            errorMessage = "Offline, check your internet connection";
-        }
-        else{
-            errorMessage = error.getMessage();
-        }
-
         HttpRequest request = sRequestMap.remove(requestCode);
         if (request.mCallback != null){
-            request.mCallback.onRequestFailed(requestCode, errorMessage);
+            request.mCallback.onRequestFailed(requestCode, new HttpRequestError(error));
         }
     }
 
@@ -431,7 +409,8 @@ public final class HttpRequest{
          * Called when a request fails.
          *
          * @param requestCode the request code of the particular request.
+         * @param error the object containing all the information about the error.
          */
-        void onRequestFailed(int requestCode, String message);
+        void onRequestFailed(int requestCode, HttpRequestError error);
     }
 }
