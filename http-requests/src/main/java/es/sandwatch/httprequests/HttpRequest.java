@@ -24,7 +24,7 @@ import java.util.Map;
 
 
 /**
- * Utility helper class to make HTTP requests.
+ * Makes network requests using the HTTP protocol.
  *
  * @author Ismael Alonso
  * @version 1.0.0
@@ -146,42 +146,106 @@ public final class HttpRequest{
      * HELPER METHODS. THESE CREATE REQUESTS OF SPECIFIC TYPES. *
      *----------------------------------------------------------*/
 
+    /**
+     * Makes a GET request using the default timeout.
+     *
+     * @param callback the callback object.
+     * @param url the url to send the request to.
+     * @return a request code.
+     */
     public static int get(@NonNull RequestCallback callback, @NonNull String url){
         return request(Method.GET, callback, url, null, sRequestTimeout);
     }
 
+    /**
+     * Makes a GET request.
+     *
+     * @param callback the callback object.
+     * @param url the url to send the request to.
+     * @param timeout the timeout in milliseconds of this request.
+     * @return a request code.
+     */
     public static int get(@NonNull RequestCallback callback, @NonNull String url, int timeout){
         return request(Method.GET, callback, url, null, timeout);
     }
 
+    /**
+     * Makes a POST request using the default timeout.
+     *
+     * @param callback the callback object.
+     * @param url the url to send the request to.
+     * @param body the body of this request.
+     * @return a request code.
+     */
     public static int post(@Nullable RequestCallback callback, @NonNull String url,
                            @NonNull JSONObject body){
 
         return request(Method.POST, callback, url, body, sRequestTimeout);
     }
 
+    /**
+     * Makes a POST request.
+     *
+     * @param callback the callback object.
+     * @param url the url to send the request to.
+     * @param body the body of this request.
+     * @param timeout the timeout in milliseconds of this request.
+     * @return a request code.
+     */
     public static int post(@Nullable RequestCallback callback, @NonNull String url,
                            @NonNull JSONObject body, int timeout){
 
         return request(Method.POST, callback, url, body, timeout);
     }
 
+    /**
+     * Makes a PUT request using the default timeout.
+     *
+     * @param callback the callback object.
+     * @param url the url to send the request to.
+     * @param body the body of this request.
+     * @return a request code.
+     */
     public static int put(@Nullable RequestCallback callback, @NonNull String url,
                           @NonNull JSONObject body){
 
         return request(Method.PUT, callback, url, body, sRequestTimeout);
     }
 
+    /**
+     * Makes a PUT request.
+     *
+     * @param callback the callback object.
+     * @param url the url to send the request to.
+     * @param body the body of this request.
+     * @param timeout the timeout in milliseconds of this request.
+     * @return a request code.
+     */
     public static int put(@Nullable RequestCallback callback, @NonNull String url,
                           @NonNull JSONObject body, int timeout){
 
         return request(Method.PUT, callback, url, body, timeout);
     }
 
+    /**
+     * Makes a DELETE request using the default timeout.
+     *
+     * @param callback the callback object.
+     * @param url the url to send the request to.
+     * @return a request code.
+     */
     public static int delete(@Nullable RequestCallback callback, @NonNull String url){
         return request(Method.DELETE, callback, url, null, sRequestTimeout);
     }
 
+    /**
+     * Makes a DELETE request.
+     *
+     * @param callback the callback object.
+     * @param url the url to send the request to.
+     * @param timeout the timeout in milliseconds of this request.
+     * @return a request code.
+     */
     public static int delete(@Nullable RequestCallback callback, @NonNull String url, int timeout){
         return request(Method.DELETE, callback, url, null, timeout);
     }
@@ -219,7 +283,7 @@ public final class HttpRequest{
      * @return the request code.
      */
     public static int request(Method method, @Nullable RequestCallback callback, @NonNull String url,
-                       @Nullable JSONObject body){
+                              @Nullable JSONObject body){
 
         return request(method, callback, url, body, sRequestTimeout);
     }
@@ -235,7 +299,7 @@ public final class HttpRequest{
      * @return the request code.
      */
     public static int request(Method method, @Nullable RequestCallback callback, @NonNull String url,
-                       @Nullable JSONObject body, int timeout){
+                              @Nullable JSONObject body, int timeout){
 
         //If the class has not yet been initialised the request can't be carried out
         if (!isInitialised()){
@@ -312,7 +376,12 @@ public final class HttpRequest{
         return requestCode;
     }
 
-
+    /**
+     * Creates the HttpRequestError object and delivers it to the callback if there is one.
+     *
+     * @param requestCode the request code of the subject request.
+     * @param error the VolleyError to generate the error from.
+     */
     private static void handleError(int requestCode, VolleyError error){
         HttpRequest request = sRequestMap.remove(requestCode);
         if (request.mCallback != null){
