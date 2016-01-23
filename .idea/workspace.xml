@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="771d4bf5-5503-4e92-b641-d836c06e325e" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequestError.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequest.java" afterPath="$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequest.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequestQueue.java" afterPath="$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequestQueue.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/RequestCodeGenerator.java" afterPath="$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/RequestCodeGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="771d4bf5-5503-4e92-b641-d836c06e325e" name="Default" comment="" />
     <ignored path="Http Requests.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -70,13 +64,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HttpRequestQueue.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="HttpRequestQueue.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequestQueue.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.7157362">
-              <caret line="107" column="31" selection-start-line="107" selection-start-column="31" selection-end-line="107" selection-end-column="31" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="6" column="27" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
               <folding>
-                <element signature="imports" expanded="true" />
                 <element signature="method#RequestModel#1;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
                 <element signature="method#RequestModel#2;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
                 <element signature="method#RequestModel#3;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
@@ -85,12 +78,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="HttpRequestError.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="HttpRequestError.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequestError.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="0.36548224">
               <caret line="27" column="31" selection-start-line="27" selection-start-column="31" selection-end-line="27" selection-end-column="31" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -3429,6 +3424,48 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Http Requests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="http-requests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Http Requests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="http-requests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Http Requests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="http-requests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="httprequests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -3739,7 +3776,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="method#RequestModel#1;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#2;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#3;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
@@ -3751,7 +3787,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -3805,7 +3843,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="method#RequestModel#1;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#2;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#3;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
@@ -3817,7 +3854,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -3871,7 +3910,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="method#RequestModel#1;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#2;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#3;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
@@ -3929,7 +3967,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="method#RequestModel#1;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#2;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#3;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
@@ -4178,14 +4215,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequestError.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="31" selection-start-line="27" selection-start-column="31" selection-end-line="27" selection-end-column="31" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/volley/src/main/java/com/android/volley/Request.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -4225,13 +4254,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequestQueue.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.7157362">
-          <caret line="107" column="31" selection-start-line="107" selection-start-column="31" selection-end-line="107" selection-end-column="31" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="6" column="27" selection-start-line="6" selection-start-column="27" selection-end-line="6" selection-end-column="27" />
           <folding>
-            <element signature="imports" expanded="true" />
             <element signature="method#RequestModel#1;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#2;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
             <element signature="method#RequestModel#3;class#RequestModel#0;class#HttpRequestQueue#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/http-requests/src/main/java/es/sandwatch/httprequests/HttpRequestError.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.36548224">
+          <caret line="27" column="31" selection-start-line="27" selection-start-column="31" selection-end-line="27" selection-end-column="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
