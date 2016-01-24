@@ -102,9 +102,6 @@ public final class HttpRequest{
      * @param context a reference to the context.
      */
     public static void init(@NonNull Context context){
-        if (sRequestMap == null){
-            sRequestMap = new HashMap<>();
-        }
         if (sRequestQueue == null){
             sRequestQueue = Volley.newRequestQueue(context);
         }
@@ -116,7 +113,7 @@ public final class HttpRequest{
      * @return true if the system is initialised, false otherwise.
      */
     private static boolean isInitialised(){
-        return sRequestHeaders != null && sRequestMap != null && sRequestQueue != null;
+        return sRequestQueue != null;
     }
 
     /**
@@ -343,6 +340,9 @@ public final class HttpRequest{
 
         //Create the request object and put it in the map
         HttpRequest request = new HttpRequest(callback, body);
+        if (sRequestMap == null){
+            sRequestMap = new HashMap<>();
+        }
         sRequestMap.put(requestCode, request);
 
         url = processUrl(url);
@@ -417,9 +417,11 @@ public final class HttpRequest{
      * @return the processed url.
      */
     private static String processUrl(@NonNull String url){
-        for (Map.Entry<String, String> parameter:sRequestUrlParams.entrySet()){
-            url += !url.contains("?") ? "?" :  "&";
-            url += parameter.getKey() + "=" + parameter.getValue();
+        if (sRequestUrlParams != null){
+            for (Map.Entry<String, String> parameter : sRequestUrlParams.entrySet()){
+                url += !url.contains("?") ? "?" : "&";
+                url += parameter.getKey() + "=" + parameter.getValue();
+            }
         }
         return url;
     }
