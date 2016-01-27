@@ -121,7 +121,7 @@ public final class HttpRequest{
      */
     private static void checkInitialisation(){
         if (!isInitialised()){
-            throw new IllegalStateException("HttpRequest Needs to be initialised before used.");
+            throw new IllegalStateException("HttpRequest needs to be initialised before used.");
         }
     }
 
