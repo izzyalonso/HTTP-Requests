@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 
 /**
@@ -32,6 +33,7 @@ public class FieldTests{
             assertEquals(timeout, 159753);
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -47,6 +49,7 @@ public class FieldTests{
             assertEquals(retries, 5);
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -62,6 +65,7 @@ public class FieldTests{
             assertEquals(retries, 2f, 0.01);
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -70,7 +74,7 @@ public class FieldTests{
     public void encodingsTest(){
         try{
             int count = 0;
-            Field field = HttpRequest.class.getField("sEncoding");
+            Field field = HttpRequest.class.getDeclaredField("sEncoding");
             field.setAccessible(true);
             for (String encoding:Charset.availableCharsets().keySet()){
                 HttpRequest.setEncoding(encoding);
@@ -83,11 +87,12 @@ public class FieldTests{
             do{
                 illegalEncoding = new BigInteger(128, new Random()).toString(32);
             }
-            while (!Charset.availableCharsets().containsKey(illegalEncoding));
+            while (Charset.availableCharsets().containsKey(illegalEncoding));
             HttpRequest.setEncoding(illegalEncoding);
             assertNotEquals(illegalEncoding, field.get(null));
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -109,6 +114,7 @@ public class FieldTests{
             );
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -128,6 +134,7 @@ public class FieldTests{
             );
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -145,6 +152,7 @@ public class FieldTests{
             assertFalse(headerMap.containsKey("headerToRemove"));
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -166,6 +174,7 @@ public class FieldTests{
             );
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -185,6 +194,7 @@ public class FieldTests{
             );
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
@@ -202,6 +212,7 @@ public class FieldTests{
             assertFalse(urlParameterMap.containsKey("parameterToRemove"));
         }
         catch (Exception x){
+            fail(x.getMessage());
             x.printStackTrace();
         }
     }
