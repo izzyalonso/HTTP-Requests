@@ -373,6 +373,9 @@ public final class HttpRequest{
         ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError{
+                if (sRequestHeaders == null){
+                    return new HashMap<>();
+                }
                 return sRequestHeaders;
             }
 

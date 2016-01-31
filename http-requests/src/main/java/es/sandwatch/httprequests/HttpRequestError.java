@@ -18,8 +18,8 @@ import com.android.volley.VolleyError;
 public class HttpRequestError{
     private static final String TAG = "HttpRequestError";
 
-    private static final int ERROR_TYPE_SERVER = 1;
-    private static final int ERROR_TYPE_NETWORK = 2;
+    private static final int ERROR_TYPE_NETWORK = 1;
+    private static final int ERROR_TYPE_SERVER = 2;
     private static final int ERROR_TYPE_OTHER = 3;
 
     private final int mErrorType;
