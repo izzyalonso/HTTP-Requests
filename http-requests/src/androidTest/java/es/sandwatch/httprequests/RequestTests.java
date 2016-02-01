@@ -47,7 +47,7 @@ public class RequestTests{
         return wifi.isWifiEnabled() && networkInfo.isConnected();
     }
 
-    //@Test()
+    @Test()
     public void networkErrorTest(){
         setWifiEnabled(InstrumentationRegistry.getContext(), false);
 
@@ -107,7 +107,7 @@ public class RequestTests{
             ix.printStackTrace();
         }
 
-        HttpRequest.removeHeader("text");
+        HttpRequest.removeUrlParameter("text");
     }
 
     @Test()
@@ -134,6 +134,58 @@ public class RequestTests{
                 fail(error.getMessage());
             }
         }, "http://http-requests.sandwatch.es/api/", postBody);
+
+        try{
+            signal.await();
+        }
+        catch (InterruptedException ix){
+            fail("No interrupt expected");
+            ix.printStackTrace();
+        }
+    }
+
+    @Test
+    public void putTest(){
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        HttpRequest.put(new HttpRequest.RequestCallback(){
+            @Override
+            public void onRequestComplete(int requestCode, String result){
+                assertEquals("PUT /api/", result);
+                signal.countDown();
+            }
+
+            @Override
+            public void onRequestFailed(int requestCode, HttpRequestError error){
+                fail(error.getMessage());
+            }
+        }, "http://http-requests.sandwatch.es/api/", new JSONObject());
+
+        try{
+            signal.await();
+        }
+        catch (InterruptedException ix){
+            fail("No interrupt expected");
+            ix.printStackTrace();
+        }
+    }
+
+    @Test
+    public void deleteTest(){
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        HttpRequest.delete(new HttpRequest.RequestCallback(){
+            @Override
+            public void onRequestComplete(int requestCode, String result){
+                assertEquals("DELETE /api/", result);
+                signal.countDown();
+            }
+
+            @Override
+            public void onRequestFailed(int requestCode, HttpRequestError error){
+                fail(error.getMessage());
+            }
+        }, "http://http-requests.sandwatch.es/api/");
 
         try{
             signal.await();
