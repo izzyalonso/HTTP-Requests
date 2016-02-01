@@ -195,4 +195,31 @@ public class RequestTests{
             ix.printStackTrace();
         }
     }
+
+    @Test
+    public void error4XXTest(){
+        final CountDownLatch signal = new CountDownLatch(1);
+
+        HttpRequest.get(new HttpRequest.RequestCallback(){
+            @Override
+            public void onRequestComplete(int requestCode, String result){
+                fail("Request shouldn't have completed");
+            }
+
+            @Override
+            public void onRequestFailed(int requestCode, HttpRequestError error){
+                assertTrue(error.isServerError());
+                assertEquals(400, error.getStatusCode());
+                signal.countDown();
+            }
+        }, "http://http-requests.sandwatch.es/api/errors/400/");
+
+        try{
+            signal.await();
+        }
+        catch (InterruptedException ix){
+            fail("No interrupt expected");
+            ix.printStackTrace();
+        }
+    }
 }

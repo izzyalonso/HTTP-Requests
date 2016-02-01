@@ -85,7 +85,7 @@ public class HttpRequestError{
      *
      * @return the HTTP status code of the server error if this is a server error, -1 otherwise.
      */
-    public int returnStatusCode(){
+    public int getStatusCode(){
         return mStatusCode;
     }
 }
