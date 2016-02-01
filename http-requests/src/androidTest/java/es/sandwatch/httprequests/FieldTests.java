@@ -95,6 +95,8 @@ public class FieldTests{
             fail(x.getMessage());
             x.printStackTrace();
         }
+
+        HttpRequest.setEncoding("UTF-8");
     }
 
     @Test
