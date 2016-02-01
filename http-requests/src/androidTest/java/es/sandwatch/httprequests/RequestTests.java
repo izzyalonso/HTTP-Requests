@@ -6,14 +6,16 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.support.test.InstrumentationRegistry;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import java.math.BigInteger;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -28,24 +30,7 @@ public class RequestTests{
     @Before
     public void setUp(){
         HttpRequest.init(InstrumentationRegistry.getContext());
-    }
-
-    public void setMobileDataEnabled(Context context, boolean enabled){
-        try{
-            final ConnectivityManager conman = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            final Class conmanClass = Class.forName(conman.getClass().getName());
-            final Field iConnectivityManagerField = conmanClass.getDeclaredField("mService");
-            iConnectivityManagerField.setAccessible(true);
-            final Object iConnectivityManager = iConnectivityManagerField.get(conman);
-            final Class iConnectivityManagerClass = Class.forName(iConnectivityManager.getClass().getName());
-            final Method setMobileDataEnabledMethod = iConnectivityManagerClass.getDeclaredMethod("setMobileDataEnabled", Boolean.class);
-            setMobileDataEnabledMethod.setAccessible(true);
-            setMobileDataEnabledMethod.invoke(iConnectivityManager, enabled);
-        }
-        catch (Exception x){
-            fail(x.getMessage());
-            x.printStackTrace();
-        }
+        HttpRequest.addHeader("contentType", "application/json");
     }
 
     private void setWifiEnabled(Context context, boolean state){
@@ -62,10 +47,9 @@ public class RequestTests{
         return wifi.isWifiEnabled() && networkInfo.isConnected();
     }
 
-    @Test()
+    //@Test()
     public void networkErrorTest(){
         setWifiEnabled(InstrumentationRegistry.getContext(), false);
-        //setMobileDataEnabled(InstrumentationRegistry.getContext(), false);
 
         final CountDownLatch signal = new CountDownLatch(1);
 
@@ -93,26 +77,63 @@ public class RequestTests{
 
         setWifiEnabled(InstrumentationRegistry.getContext(), true);
         while (!isWifiConnected(InstrumentationRegistry.getContext())){
-
+            //Do nothing here, just wait until the wifi is back up.
         }
-        //setMobileDataEnabled(InstrumentationRegistry.getContext(), true);
     }
 
     @Test()
     public void getTest(){
         final CountDownLatch signal = new CountDownLatch(1);
+        final String text = new BigInteger(128, new Random()).toString(32);
+        HttpRequest.addUrlParameter("text", text);
         HttpRequest.get(new HttpRequest.RequestCallback(){
             @Override
             public void onRequestComplete(int requestCode, String result){
-                assertTrue(true);
+                assertEquals("GET /api/ Key 'text' with value '" + text + "'", result);
                 signal.countDown();
             }
 
             @Override
             public void onRequestFailed(int requestCode, HttpRequestError error){
-                fail("request shoudln't failed");
+                fail("request shouldn't have failed");
             }
-        }, "http://http-requests.sandwatch.es/api/?text=text");
+        }, "http://http-requests.sandwatch.es/api/");
+
+        try{
+            signal.await();
+        }
+        catch (InterruptedException ix){
+            fail("No interrupt expected");
+            ix.printStackTrace();
+        }
+
+        HttpRequest.removeHeader("text");
+    }
+
+    @Test()
+    public void postTest(){
+        final CountDownLatch signal = new CountDownLatch(1);
+        final String text = new BigInteger(128, new Random()).toString(32);
+        JSONObject postBody = new JSONObject();
+        try{
+            postBody.put("text", text);
+        }
+        catch (JSONException jsonx){
+            jsonx.printStackTrace();
+        }
+
+        HttpRequest.post(new HttpRequest.RequestCallback(){
+            @Override
+            public void onRequestComplete(int requestCode, String result){
+                assertEquals("POST /api/ text = " + text, result);
+                signal.countDown();
+            }
+
+            @Override
+            public void onRequestFailed(int requestCode, HttpRequestError error){
+                fail(error.getMessage());
+            }
+        }, "http://http-requests.sandwatch.es/api/", postBody);
 
         try{
             signal.await();
