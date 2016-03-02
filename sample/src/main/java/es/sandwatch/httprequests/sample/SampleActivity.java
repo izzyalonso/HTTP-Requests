@@ -45,8 +45,10 @@ public class SampleActivity
         mProgress = (ProgressBar)findViewById(R.id.sample_progress);
         mOutput = (TextView)findViewById(R.id.sample_output);
 
+        //Listener for the button
         mSend.setOnClickListener(this);
 
+        //Init flags
         mRequestCode = -1;
         mRequestInProgress = false;
     }
@@ -67,6 +69,7 @@ public class SampleActivity
                 mProgress.setVisibility(View.INVISIBLE);
                 mSend.setText(R.string.button_send);
             }
+            mRequestInProgress = !mRequestInProgress;
         }
     }
 
