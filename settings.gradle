@@ -1,1 +1,1 @@
-include ':future-sample', ':volley', ':http-requests'
+include ':future-sample', ':volley', ':library'

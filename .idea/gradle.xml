@@ -11,7 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/future-sample" />
-            <option value="$PROJECT_DIR$/http-requests" />
+            <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/volley" />
           </set>
         </option>
