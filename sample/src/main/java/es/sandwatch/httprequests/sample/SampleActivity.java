@@ -79,15 +79,17 @@ public class SampleActivity
             mOutput.setText(result);
             mProgress.setVisibility(View.INVISIBLE);
             mSend.setText(R.string.button_send);
+            mRequestInProgress = false;
         }
     }
 
     @Override
     public void onRequestFailed(int requestCode, HttpRequestError error){
         if (requestCode == mRequestCode){
-            mOutput.setText("There was an error");
+            mOutput.setText(error.toString());
             mProgress.setVisibility(View.INVISIBLE);
             mSend.setText(R.string.button_send);
+            mRequestInProgress = false;
         }
     }
 }
