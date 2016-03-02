@@ -88,4 +88,19 @@ public final class HttpRequestError{
     public int getStatusCode(){
         return mStatusCode;
     }
+
+    @Override
+    public String toString(){
+        String result = "HttpRequestError: ";
+        if (isServerError()){
+            result += "server error, code: " + mStatusCode + ", message: " + mMessage;
+        }
+        else if (isNetworkError()){
+            result += "network error";
+        }
+        else{
+            result += mMessage;
+        }
+        return result;
+    }
 }
