@@ -15,7 +15,7 @@ import com.android.volley.VolleyError;
  * @author Ismael Alonso
  * @version 1.0.0
  */
-public class HttpRequestError{
+public final class HttpRequestError{
     private static final String TAG = "HttpRequestError";
 
     private static final int ERROR_TYPE_NETWORK = 1;
