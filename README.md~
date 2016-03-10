@@ -66,19 +66,19 @@ public class RequestActivity extends AppCompatActivity implements HttpRequest.Re
     
     @Override
     public void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        
-        //Set layout, grab UI components, etc... skipped in this example
-        
-        JSONObject postBody = new JSONObject();
-        JSONObject putBody = new JSONObject();
-        //Add parameters to the json objects
-        
-        //Make the requests
-        mGetRequest = HttpRequest.get(this, "https://...");
-        mPostRequest = HttpRequest.post(this, "https://...", postBody);
-        mPutRequest = HttpRequest.put(this, "https://...", putBody);
-        mDeleteRequest = HttpRequest.delete(this, "https://...");
+    	super.onCreate(savedInstanceState);
+    	
+    	//Set layout, grab UI components, etc is skipped in this example
+    	
+    	JSONObject postBody = new JSONObject();
+    	JSONObject putBody = new JSONObject();
+    	//Add parameters to the json objects
+    	
+    	//Make the requests
+    	mGetRequest = HttpRequest.get(this, "https://...");
+    	mPostRequest = HttpRequest.post(this, "https://...", postBody);
+    	mPutRequest = HttpRequest.put(this, "https://...", putBody);
+    	mDeleteRequest = HttpRequest.delete(this, "https://...");
     }
     
     @Override
@@ -113,4 +113,14 @@ public class RequestActivity extends AppCompatActivity implements HttpRequest.Re
         }
     }
 }
-```
+
+
+
+
+
+
+
+
+
+
+

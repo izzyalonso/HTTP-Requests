@@ -33,11 +33,11 @@ public class RequestTests{
         HttpRequest.addHeader("contentType", "application/json");
     }
 
-    private void setWifiEnabled(Context context, boolean state){
+    /*private void setWifiEnabled(Context context, boolean state){
         WifiManager wifiManager = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         //The permission required to access this method is declared in the 'androidTest' manifest
         wifiManager.setWifiEnabled(state);
-    }
+    }*/
 
     private boolean isWifiConnected(Context context){
         WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
@@ -47,7 +47,7 @@ public class RequestTests{
         return wifi.isWifiEnabled() && networkInfo.isConnected();
     }
 
-    @Test()
+    /*@Test()
     public void networkErrorTest(){
         setWifiEnabled(InstrumentationRegistry.getContext(), false);
 
@@ -79,7 +79,7 @@ public class RequestTests{
         while (!isWifiConnected(InstrumentationRegistry.getContext())){
             //Do nothing here, just wait until the wifi is back up.
         }
-    }
+    }*/
 
     @Test()
     public void getTest(){
