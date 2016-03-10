@@ -22,7 +22,7 @@ HttpRequest.init(getApplicationContext());
 Additionaly, you can set permanent headers and url parameters:
 
 ```java
-HttpRequest.addHeader("Authorization", "header content);
+HttpRequest.addHeader("Authorization", "header content");
 HttpRequest.addUrlParameter("app_version", "1.0.0");
 ```
 
