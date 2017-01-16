@@ -18,7 +18,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,62 +38,11 @@ public final class HttpRequest{
     private static final String DEFAULT_ENCODING = "UTF-8";
 
 
-    //Retry policy values
-    private static int sRequestTimeout = DEFAULT_REQUEST_TIMEOUT;
-    private static int sRequestRetries = DEFAULT_REQUEST_RETRIES;
-    private static float sRetryBackoff = DEFAULT_RETRY_BACKOFF;
-
-    //Encoding
-    private static String sEncoding = DEFAULT_ENCODING;
-
-    //Request headers
-    private static Map<String, String> sRequestHeaders;
-    private static Map<String, String> sRequestUrlParams;
 
     //requestCode -> HttpRequest
     private static Map<Integer, HttpRequest> sRequestMap;
     private static RequestQueue sRequestQueue;
 
-
-    /**
-     * Overrides the existing request timeout value.
-     *
-     * @param requestTimeout the new request timeout value in milliseconds.
-     */
-    public static void setRequestTimeout(int requestTimeout){
-        sRequestTimeout = requestTimeout;
-    }
-
-    /**
-     * Overrides the existing maximum retry number.
-     *
-     * @param requestRetries the new maximum number of retries.
-     */
-    public static void setRequestRetries(int requestRetries){
-        sRequestRetries = requestRetries;
-    }
-
-    /**
-     * Overrides the existing backoff value. The backoff is the increase in the timeout value
-     * after a request fails. When that happens, the new request timeout is calculated as the
-     * product of the current request timeout times the backoff.
-     *
-     * @param retryBackoff the timeout backoff.
-     */
-    public static void setRetryBackoff(float retryBackoff){
-        sRetryBackoff = retryBackoff;
-    }
-
-    /**
-     * Overrides the existing charset used to parse the network response.
-     *
-     * @param encoding the name of the new encoding to be used.
-     */
-    public static void setEncoding(String encoding){
-        if (Charset.availableCharsets().containsKey(encoding)){
-            sEncoding = encoding;
-        }
-    }
 
     /**
      * Initialises the library.
@@ -125,52 +73,6 @@ public final class HttpRequest{
         }
     }
 
-    /**
-     * Adds a header to the header list to be sent with every request.
-     *
-     * @param header the header name.
-     * @param value the value of the header.
-     */
-    public static void addHeader(String header, String value){
-        if (sRequestHeaders == null){
-            sRequestHeaders = new HashMap<>();
-        }
-        sRequestHeaders.put(header, value);
-    }
-
-    /**
-     * Removes a header from the header list to be sent with every request.
-     *
-     * @param header the header name.
-     * @return true if the header was removed, false otherwise.
-     */
-    public static boolean removeHeader(String header){
-        return sRequestHeaders != null && sRequestHeaders.remove(header) != null;
-    }
-
-    /**
-     * Adds a parameter to the URLs to send requests to.
-     *
-     * @param parameter the key of the parameter.
-     * @param value the value of the parameter.
-     */
-    public static void addUrlParameter(String parameter, String value){
-        if (sRequestUrlParams == null){
-            sRequestUrlParams = new HashMap<>();
-        }
-        sRequestUrlParams.put(parameter, value);
-    }
-
-    /**
-     * Removes a parameter from the list of parameters to add to the URLs to send requests to.
-     *
-     * @param parameter the key of the parameter.
-     * @return true if the parameter was removed, false otherwise.
-     */
-    public static boolean removeUrlParameter(String parameter){
-        return sRequestUrlParams != null && sRequestUrlParams.remove(parameter) != null;
-    }
-
 
     /*----------------------------------------------------------*
      * HELPER METHODS. THESE CREATE REQUESTS OF SPECIFIC TYPES. *
@@ -184,7 +86,7 @@ public final class HttpRequest{
      * @return a request code.
      */
     public static int get(@NonNull RequestCallback callback, @NonNull String url){
-        return request(Method.GET, callback, url, null, sRequestTimeout);
+        return request(Method.GET, callback, url, null, DEFAULT_REQUEST_TIMEOUT);
     }
 
     /**
@@ -210,7 +112,7 @@ public final class HttpRequest{
     public static int post(@Nullable RequestCallback callback, @NonNull String url,
                            @NonNull JSONObject body){
 
-        return request(Method.POST, callback, url, body, sRequestTimeout);
+        return request(Method.POST, callback, url, body, DEFAULT_REQUEST_TIMEOUT);
     }
 
     /**
@@ -239,7 +141,7 @@ public final class HttpRequest{
     public static int put(@Nullable RequestCallback callback, @NonNull String url,
                           @NonNull JSONObject body){
 
-        return request(Method.PUT, callback, url, body, sRequestTimeout);
+        return request(Method.PUT, callback, url, body, DEFAULT_REQUEST_TIMEOUT);
     }
 
     /**
@@ -265,7 +167,7 @@ public final class HttpRequest{
      * @return a request code.
      */
     public static int delete(@Nullable RequestCallback callback, @NonNull String url){
-        return request(Method.DELETE, callback, url, null, sRequestTimeout);
+        return request(Method.DELETE, callback, url, null, DEFAULT_REQUEST_TIMEOUT);
     }
 
     /**
@@ -315,7 +217,7 @@ public final class HttpRequest{
     public static int request(Method method, @Nullable RequestCallback callback, @NonNull String url,
                               @Nullable JSONObject body){
 
-        return request(method, callback, url, body, sRequestTimeout);
+        return request(method, callback, url, body, DEFAULT_REQUEST_TIMEOUT);
     }
 
     /**
@@ -373,10 +275,7 @@ public final class HttpRequest{
         ){
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError{
-                if (sRequestHeaders == null){
-                    return new HashMap<>();
-                }
-                return sRequestHeaders;
+                return new HashMap<>();
             }
 
             @Override
@@ -392,7 +291,7 @@ public final class HttpRequest{
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response){
                 try{
-                    String utf8String = new String(response.data, sEncoding);
+                    String utf8String = new String(response.data, DEFAULT_ENCODING);
                     return Response.success(utf8String, HttpHeaderParser.parseCacheHeaders(response));
                 }
                 catch (UnsupportedEncodingException uex){
@@ -402,7 +301,7 @@ public final class HttpRequest{
         };
 
         //Create and set the retry policy
-        volleyRequest.setRetryPolicy(new DefaultRetryPolicy(timeout, sRequestRetries, sRetryBackoff));
+        volleyRequest.setRetryPolicy(new DefaultRetryPolicy(timeout, DEFAULT_REQUEST_RETRIES, DEFAULT_RETRY_BACKOFF));
 
         //Set the volley request to the request object
         request.setRequest(volleyRequest);
@@ -420,12 +319,12 @@ public final class HttpRequest{
      * @return the processed url.
      */
     private static String processUrl(@NonNull String url){
-        if (sRequestUrlParams != null){
+        /*if (sRequestUrlParams != null){
             for (Map.Entry<String, String> parameter : sRequestUrlParams.entrySet()){
                 url += !url.contains("?") ? "?" : "&";
                 url += parameter.getKey() + "=" + parameter.getValue();
             }
-        }
+        }*/
         return url;
     }
 
@@ -509,30 +408,5 @@ public final class HttpRequest{
         private int getMethod(){
             return mMethod;
         }
-    }
-
-
-    /**
-     * Callback interface for HttpRequest.
-     *
-     * @author Ismael Alonso
-     * @version 1.0.0
-     */
-    public interface RequestCallback{
-        /**
-         * Called when a request is completed successfully.
-         *
-         * @param requestCode the request code of the particular request.
-         * @param result the result of the request as a string.
-         */
-        void onRequestComplete(int requestCode, String result);
-
-        /**
-         * Called when a request fails.
-         *
-         * @param requestCode the request code of the particular request.
-         * @param error the object containing all the information about the error.
-         */
-        void onRequestFailed(int requestCode, HttpRequestError error);
     }
 }

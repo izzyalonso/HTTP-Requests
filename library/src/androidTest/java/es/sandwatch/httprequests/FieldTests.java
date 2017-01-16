@@ -22,7 +22,7 @@ import static org.junit.Assert.fail;
  * @version 1.0.0
  */
 public class FieldTests{
-    @Test
+    /*@Test
     public void setTimeoutTest(){
         HttpRequest.setRequestTimeout(159753);
         try{
@@ -217,5 +217,5 @@ public class FieldTests{
             fail(x.getMessage());
             x.printStackTrace();
         }
-    }
+    }*/
 }

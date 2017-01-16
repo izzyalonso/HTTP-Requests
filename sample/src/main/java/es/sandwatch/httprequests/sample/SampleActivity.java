@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import es.sandwatch.httprequests.HttpRequest;
 import es.sandwatch.httprequests.HttpRequestError;
+import es.sandwatch.httprequests.RequestCallback;
 
 
 /**
@@ -20,7 +21,7 @@ import es.sandwatch.httprequests.HttpRequestError;
  */
 public class SampleActivity
         extends AppCompatActivity
-        implements View.OnClickListener, HttpRequest.RequestCallback{
+        implements View.OnClickListener, RequestCallback{
 
     private static final String GET_URL = "http://http-requests.sandwatch.es/api/";
 

@@ -22,7 +22,7 @@ import static org.junit.Assert.fail;
  * @version 1.0.0
  */
 public class MethodTests{
-    @Before
+    /*@Before
     public void setUp(){
         HttpRequest.init(InstrumentationRegistry.getContext());
     }
@@ -105,5 +105,5 @@ public class MethodTests{
             fail(x.getMessage());
             x.printStackTrace();
         }
-    }
+    }*/
 }

@@ -27,7 +27,7 @@ import static org.junit.Assert.fail;
  * @version 1.0.0
  */
 public class RequestTests{
-    @Before
+    /*@Before
     public void setUp(){
         HttpRequest.init(InstrumentationRegistry.getContext());
         HttpRequest.addHeader("contentType", "application/json");
@@ -39,7 +39,7 @@ public class RequestTests{
         wifiManager.setWifiEnabled(state);
     }*/
 
-    private boolean isWifiConnected(Context context){
+    /*private boolean isWifiConnected(Context context){
         WifiManager wifi = (WifiManager)context.getSystemService(Context.WIFI_SERVICE);
         ConnectivityManager connManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -81,7 +81,7 @@ public class RequestTests{
         }
     }*/
 
-    @Test()
+    /*@Test()
     public void getTest(){
         final CountDownLatch signal = new CountDownLatch(1);
         final String text = new BigInteger(128, new Random()).toString(32);
@@ -221,5 +221,5 @@ public class RequestTests{
             fail("No interrupt expected");
             ix.printStackTrace();
         }
-    }
+    }*/
 }

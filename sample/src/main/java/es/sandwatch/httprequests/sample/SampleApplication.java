@@ -19,7 +19,7 @@ public class SampleApplication extends Application{
         HttpRequest.init(this);
         //Add as many headers and url parameters as you desire, they will be sent
         //  in every request untill you remove them
-        HttpRequest.addHeader("version", "1");
-        HttpRequest.addUrlParameter("test", "true");
+        /*HttpRequest.addHeader("version", "1");
+        HttpRequest.addUrlParameter("test", "true");*/
     }
 }
