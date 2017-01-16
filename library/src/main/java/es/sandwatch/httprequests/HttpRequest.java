@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -62,15 +61,6 @@ public final class HttpRequest{
      */
     private static boolean isInitialised(){
         return sRequestQueue != null;
-    }
-
-    /**
-     * Checks whether the class has been initialised, if not, throws an exception.
-     */
-    private static void checkInitialisation(){
-        if (!isInitialised()){
-            throw new IllegalStateException("HttpRequest needs to be initialised before used.");
-        }
     }
 
 
@@ -192,7 +182,7 @@ public final class HttpRequest{
         if (sRequestMap != null){
             HttpRequest request = sRequestMap.remove(requestCode);
             if (request != null){
-                request.mRequest.cancel();
+                //request.mRequest.cancel();
                 return true;
             }
         }
@@ -233,15 +223,11 @@ public final class HttpRequest{
     public static int request(Method method, @Nullable RequestCallback callback, @NonNull String url,
                               @Nullable JSONObject body, int timeout){
 
-        //If the class has not yet been initialised the request can't be carried out and
-        //  an Exception is thrown
-        checkInitialisation();
-
         //Generate the request code
         final int requestCode = RequestCodeGenerator.generate();
 
         //Create the request object and put it in the map
-        HttpRequest request = new HttpRequest(callback, body);
+        HttpRequest request = new HttpRequest(Method.GET, callback);
         if (sRequestMap == null){
             sRequestMap = new HashMap<>();
         }
@@ -252,16 +238,16 @@ public final class HttpRequest{
         //Request a string response from the provided URL
         StringRequest volleyRequest = new StringRequest(
                 //Method and url
-                method.getMethod(), url,
+                0, url,
 
                 //Response listener, called if the request succeeds
                 new Response.Listener<String>(){
                     @Override
                     public void onResponse(String response){
                         HttpRequest request = sRequestMap.remove(requestCode);
-                        if (request.mCallback != null){
+                        /*if (request.mCallback != null){
                             request.mCallback.onRequestComplete(requestCode, response);
-                        }
+                        }*/
                     }
                 },
 
@@ -285,7 +271,7 @@ public final class HttpRequest{
 
             @Override
             public byte[] getBody() throws AuthFailureError{
-                return sRequestMap.get(requestCode).mBody.toString().getBytes();
+                return new JSONObject().toString().getBytes();
             }
 
             @Override
@@ -304,7 +290,7 @@ public final class HttpRequest{
         volleyRequest.setRetryPolicy(new DefaultRetryPolicy(timeout, DEFAULT_REQUEST_RETRIES, DEFAULT_RETRY_BACKOFF));
 
         //Set the volley request to the request object
-        request.setRequest(volleyRequest);
+        //request.setRequest(volleyRequest);
 
         //Add the request to the queue
         sRequestQueue.add(volleyRequest);
@@ -336,77 +322,95 @@ public final class HttpRequest{
      */
     private static void handleError(int requestCode, VolleyError error){
         HttpRequest request = sRequestMap.remove(requestCode);
-        if (request.mCallback != null){
+        /*if (request.mCallback != null){
             request.mCallback.onRequestFailed(requestCode, new HttpRequestError(error));
-        }
+        }*/
     }
 
 
-    /*----------------------------------------------*
+    /*-------------------------------------------*
      * HttpRequest OBJECT ATTRIBUTES AND METHODS *
-     *----------------------------------------------*/
+     *-------------------------------------------*/
 
-    private final RequestCallback mCallback;
-    private final JSONObject mBody;
+    private final Method method;
+    private final RequestCallback callback;
 
-    private StringRequest mRequest;
+    private Map<String, String> urlParameters;
+    private Map<String, String> headers;
+
+    private int timeout;
+    private int retries;
+    private float backoff;
+
+    private int attempt;
+
+    private boolean executed;
 
 
     /**
      * Constructor.
      *
      * @param callback the callback object for this request.
-     * @param body the body of the request.
      */
-    private HttpRequest(@Nullable RequestCallback callback, @Nullable JSONObject body){
-        mCallback = callback;
-        if (body == null){
-            body = new JSONObject();
+    HttpRequest(@NonNull Method method, @NonNull RequestCallback callback){
+        this.method = method;
+        this.callback = callback;
+        urlParameters = new HashMap<>();
+        headers = new HashMap<>();
+        attempt = 0;
+        executed = false;
+    }
+
+    public void addUrlParameter(String parameter, String value){
+        if (!executed){
+            urlParameters.put(parameter, value);
         }
-        mBody = body;
     }
 
-    /**
-     * Associates the volley request with this HttpRequest. Useful to cancel requests.
-     *
-     * @param request the volley request.
-     */
-    private void setRequest(@NonNull StringRequest request){
-        mRequest = request;
+    public void removeUrlParameter(String parameter){
+        if (!executed){
+            urlParameters.remove(parameter);
+        }
+    }
+
+    public void addHeader(String header, String value){
+        if (!executed){
+            headers.put(header, value);
+        }
+    }
+
+    public void removeHeader(String header){
+        if (!executed){
+            headers.remove(header);
+        }
+    }
+
+    public void setTimeout(int timeout){
+        if (!executed){
+            this.timeout = timeout;
+        }
+    }
+
+    public void setRetries(int retries){
+        if (!executed){
+            this.retries = retries;
+        }
+    }
+
+    public void setBackoff(float backoff){
+        if (!executed){
+            this.backoff = backoff;
+        }
     }
 
 
     /**
-     * Enumeration containing all the allowed methods.
+     * Contains all the allowed methods.
      *
      * @author Ismael Alonso
      * @version 1.0.0
      */
-    public enum Method{
-        GET(Request.Method.GET),
-        POST(Request.Method.POST),
-        PUT(Request.Method.PUT),
-        DELETE(Request.Method.DELETE);
-
-        int mMethod;
-
-
-        /**
-         * Constructor. Sets the method mapping so that Volley can understand it.
-         *
-         * @param method Volley's representation of the method.
-         */
-        Method(int method){
-            mMethod = method;
-        }
-
-        /**
-         * Getter for the Volley's representation of the method.
-         *
-         * @return Volley's representation of the method.
-         */
-        private int getMethod(){
-            return mMethod;
-        }
+    enum Method{
+        GET, POST, PUT, DELETE
     }
 }

@@ -27,7 +27,7 @@ public final class HttpRequests{
     private static boolean initialized = false;
 
     //Default request headers and url parameters
-    static Map<String, String> requestUrlParams;
+    static Map<String, String> requestUrlParameters;
     static Map<String, String> requestHeaders;
 
     //Retry policy values
@@ -44,7 +44,7 @@ public final class HttpRequests{
      * Initializes the library. Call in Application.onCreate().
      */
     public static void init(){
-        requestUrlParams = new HashMap<>();
+        requestUrlParameters = new HashMap<>();
         requestHeaders = new HashMap<>();
 
         initialized = true;
@@ -146,7 +146,7 @@ public final class HttpRequests{
      */
     public static void addPersistingUrlParameter(String parameter, String value){
         checkInitialization();
-        requestUrlParams.put(parameter, value);
+        requestUrlParameters.put(parameter, value);
     }
 
     /**
@@ -156,6 +156,6 @@ public final class HttpRequests{
      */
     public static void removePersistingUrlParameter(String parameter){
         checkInitialization();
-        requestUrlParams.remove(parameter);
+        requestUrlParameters.remove(parameter);
     }
 }
