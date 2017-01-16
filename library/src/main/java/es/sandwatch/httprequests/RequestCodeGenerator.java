@@ -11,7 +11,7 @@ abstract class RequestCodeGenerator{
     private static final int MAX_REQUEST_CODE = 999999;
 
     //Need to keep track of the last request code delivered to avoid collisions
-    private static int sLastRequestCode = 0;
+    private static int lastRequestCode = 0;
 
 
     /**
@@ -20,9 +20,9 @@ abstract class RequestCodeGenerator{
      * @return the request code.
      */
     static int generate(){
-        if (sLastRequestCode >= MAX_REQUEST_CODE){
-            sLastRequestCode = 0;
+        if (lastRequestCode >= MAX_REQUEST_CODE){
+            lastRequestCode = 0;
         }
-        return ++sLastRequestCode;
+        return ++lastRequestCode;
     }
 }

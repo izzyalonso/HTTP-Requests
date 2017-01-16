@@ -27,19 +27,27 @@ public class RequestClient{
     }
 
 
-    void get(){
-
+    public HttpRequest get(@NonNull String endpoint){
+        return null;
     }
 
-    void post(){
-
+    public HttpRequest post(@NonNull String endpoint, @NonNull String body){
+        return null;
     }
 
-    void put(){
-
+    public HttpRequest post(@NonNull String endpoint, @NonNull RequestBodySender sender){
+        return null;
     }
 
-    void delete(){
+    public HttpRequest put(@NonNull String endpoint, @NonNull String body){
+        return null;
+    }
 
+    public HttpRequest put(@NonNull String endpoint, @NonNull RequestBodySender sender){
+        return null;
+    }
+
+    public HttpRequest delete(@NonNull String endpoint){
+        return null;
     }
 }
