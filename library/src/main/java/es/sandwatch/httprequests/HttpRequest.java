@@ -361,46 +361,53 @@ public final class HttpRequest{
         executed = false;
     }
 
-    public void addUrlParameter(String parameter, String value){
+    public HttpRequest addUrlParameter(String parameter, String value){
         if (!executed){
             urlParameters.put(parameter, value);
         }
+        return this;
     }
 
-    public void removeUrlParameter(String parameter){
+    public HttpRequest removeUrlParameter(String parameter){
         if (!executed){
             urlParameters.remove(parameter);
         }
+        return this;
     }
 
-    public void addHeader(String header, String value){
+    public HttpRequest addHeader(String header, String value){
         if (!executed){
             headers.put(header, value);
         }
+        return this;
     }
 
-    public void removeHeader(String header){
+    public HttpRequest removeHeader(String header){
         if (!executed){
             headers.remove(header);
         }
+        return this;
     }
 
-    public void setTimeout(int timeout){
+    public HttpRequest setTimeout(int timeout){
         if (!executed){
             this.timeout = timeout;
         }
+        return this;
     }
 
-    public void setRetries(int retries){
+    public HttpRequest setRetries(int retries){
         if (!executed){
             this.retries = retries;
         }
+        return this;
     }
 
-    public void setBackoff(float backoff){
+    public HttpRequest setBackoff(float backoff){
         if (!executed){
             this.backoff = backoff;
         }
+        return this;
     }
 
 
