@@ -227,7 +227,7 @@ public final class HttpRequest{
         final int requestCode = RequestCodeGenerator.generate();
 
         //Create the request object and put it in the map
-        HttpRequest request = new HttpRequest(Method.GET, callback);
+        HttpRequest request = new HttpRequest(Method.GET, "", callback);
         if (sRequestMap == null){
             sRequestMap = new HashMap<>();
         }
@@ -333,7 +333,8 @@ public final class HttpRequest{
      *-------------------------------------------*/
 
     private final Method method;
-    private final RequestCallback callback;
+    private final String endpoint;
+    private RequestCallback callback;
 
     private Map<String, String> urlParameters;
     private Map<String, String> headers;
@@ -344,6 +345,8 @@ public final class HttpRequest{
 
     private int attempt;
 
+
+
     private boolean executed;
 
 
@@ -352,8 +355,9 @@ public final class HttpRequest{
      *
      * @param callback the callback object for this request.
      */
-    HttpRequest(@NonNull Method method, @NonNull RequestCallback callback){
+    HttpRequest(@NonNull Method method, @NonNull String endpoint, @NonNull RequestCallback callback){
         this.method = method;
+        this.endpoint = endpoint;
         this.callback = callback;
         urlParameters = new HashMap<>();
         headers = new HashMap<>();
@@ -406,6 +410,13 @@ public final class HttpRequest{
     public HttpRequest setBackoff(float backoff){
         if (!executed){
             this.backoff = backoff;
+        }
+        return this;
+    }
+
+    public HttpRequest setCallback(@NonNull RequestCallback callback){
+        if (!executed){
+            this.callback = callback;
         }
         return this;
     }
