@@ -1,6 +1,7 @@
 package es.sandwatch.httprequests;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 
@@ -49,5 +50,14 @@ public class RequestClient{
 
     public HttpRequest delete(@NonNull String endpoint){
         return null;
+    }
+
+
+    private class Worker extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... params){
+            return null;
+        }
     }
 }

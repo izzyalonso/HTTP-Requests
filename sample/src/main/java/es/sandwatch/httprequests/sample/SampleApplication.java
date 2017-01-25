@@ -16,7 +16,7 @@ public class SampleApplication extends Application{
     public void onCreate(){
         super.onCreate();
         //Always initialize the class in the application
-        HttpRequest.init(this);
+        //HttpRequest.init(this);
         //Add as many headers and url parameters as you desire, they will be sent
         //  in every request untill you remove them
         /*HttpRequest.addHeader("version", "1");

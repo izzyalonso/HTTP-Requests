@@ -1,24 +1,22 @@
 package es.sandwatch.httprequests;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -40,28 +38,6 @@ public final class HttpRequest{
 
     //requestCode -> HttpRequest
     private static Map<Integer, HttpRequest> sRequestMap;
-    private static RequestQueue sRequestQueue;
-
-
-    /**
-     * Initialises the library.
-     *
-     * @param context a reference to the context.
-     */
-    public static void init(@NonNull Context context){
-        if (sRequestQueue == null){
-            sRequestQueue = Volley.newRequestQueue(context);
-        }
-    }
-
-    /**
-     * Tells whether the system has been initialised.
-     *
-     * @return true if the system is initialised, false otherwise.
-     */
-    private static boolean isInitialised(){
-        return sRequestQueue != null;
-    }
 
 
     /*----------------------------------------------------------*
@@ -227,7 +203,7 @@ public final class HttpRequest{
         final int requestCode = RequestCodeGenerator.generate();
 
         //Create the request object and put it in the map
-        HttpRequest request = new HttpRequest(Method.GET, "", callback);
+        HttpRequest request = new HttpRequest(Method.GET, "");
         if (sRequestMap == null){
             sRequestMap = new HashMap<>();
         }
@@ -292,9 +268,6 @@ public final class HttpRequest{
         //Set the volley request to the request object
         //request.setRequest(volleyRequest);
 
-        //Add the request to the queue
-        sRequestQueue.add(volleyRequest);
-
         return requestCode;
     }
 
@@ -332,19 +305,21 @@ public final class HttpRequest{
      * HttpRequest OBJECT ATTRIBUTES AND METHODS *
      *-------------------------------------------*/
 
+    //This are the attributes that are required for a request to be fired
     private final Method method;
-    private final String endpoint;
+    private final String url;
     private RequestCallback callback;
-
-    private Map<String, String> urlParameters;
-    private Map<String, String> headers;
 
     private int timeout;
     private int retries;
     private float backoff;
 
-    private int attempt;
+    private Map<String, String> urlParameters;
+    private Map<String, String> headers;
 
+    private String encoding;
+
+    private int attempt;
 
 
     private boolean executed;
@@ -353,15 +328,31 @@ public final class HttpRequest{
     /**
      * Constructor.
      *
-     * @param callback the callback object for this request.
+     * @param method the request method.
+     * @param url the url of the request.
      */
-    HttpRequest(@NonNull Method method, @NonNull String endpoint, @NonNull RequestCallback callback){
+    HttpRequest(@NonNull Method method, @NonNull String url){
         this.method = method;
-        this.endpoint = endpoint;
-        this.callback = callback;
-        urlParameters = new HashMap<>();
-        headers = new HashMap<>();
+        this.url = url;
+
+        timeout = HttpRequests.requestTimeout;
+        retries = HttpRequests.requestRetries;
+        backoff = HttpRequests.retryBackoff;
         attempt = 0;
+
+        urlParameters = new HashMap<>();
+        Map<String, String> persistentParameters = HttpRequests.getPersistentRequestUrlParameters();
+        for (Map.Entry<String, String> entry:persistentParameters.entrySet()){
+            urlParameters.put(entry.getKey(), entry.getValue());
+        }
+        headers = new HashMap<>();
+        Map<String, String> persistentHeaders = HttpRequests.getPersistentRequestHeaders();
+        for (Map.Entry<String, String> entry:persistentHeaders.entrySet()){
+            headers.put(entry.getKey(), entry.getValue());
+        }
+
+        encoding = HttpRequests.encoding;
+
         executed = false;
     }
 
