@@ -26,16 +26,16 @@ public final class HttpRequests{
 
 
     //Retry policy values
-    static int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
-    static int requestRetries = DEFAULT_REQUEST_RETRIES;
-    static float retryBackoff = DEFAULT_RETRY_BACKOFF;
+    private static int requestTimeout = DEFAULT_REQUEST_TIMEOUT;
+    private static int requestRetries = DEFAULT_REQUEST_RETRIES;
+    private static float retryBackoff = DEFAULT_RETRY_BACKOFF;
 
     //Default request headers and url parameters
     private static Map<String, String> requestUrlParameters;
     private static Map<String, String> requestHeaders;
 
     //Encoding
-    static String encoding = DEFAULT_ENCODING;
+    private static String encoding = DEFAULT_ENCODING;
 
 
     /**
@@ -131,6 +131,34 @@ public final class HttpRequests{
         return false;
     }
 
+    /**
+     * Getter for the default request timeout.
+     *
+     * @return the default request timeout.
+     */
+    static int getDefaultRequestTimeout(){
+        return requestTimeout;
+    }
+
+    /**
+     * Getter for the default request retry number.
+     *
+     * @return the default number of times a request should retry executing when it fails due
+     * to a timeout.
+     */
+    static int getDefaultRequestRetries(){
+        return requestRetries;
+    }
+
+    /**
+     * Getter for the default timeout backoff.
+     *
+     * @return the default timeout backoff.
+     */
+    static float getDefaultRetryBackoff(){
+        return retryBackoff;
+    }
+
     @NonNull
     static Map<String, String> getPersistentRequestUrlParameters(){
         if (requestUrlParameters == null){
@@ -145,6 +173,15 @@ public final class HttpRequests{
             requestHeaders = new HashMap<>();
         }
         return requestHeaders;
+    }
+
+    /**
+     * Getter for the default encoding.
+     *
+     * @return the default encoding.
+     */
+    static String getDefaultEncoding(){
+        return encoding;
     }
 
 

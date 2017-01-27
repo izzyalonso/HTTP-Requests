@@ -59,13 +59,13 @@ public class SampleActivity
         if (view.getId() == R.id.sample_button){
             if (!mRequestInProgress){
                 String input = mInput.getText().toString().trim();
-                mRequestCode = HttpRequest.get(this, GET_URL + "?text=" + input);
+                //mRequestCode = HttpRequest.get(this, GET_URL + "?text=" + input);
                 mProgress.setVisibility(View.VISIBLE);
                 mSend.setText(R.string.button_cancel);
                 mOutput.setText("");
             }
             else{
-                HttpRequest.cancel(mRequestCode);
+                //HttpRequest.cancel(mRequestCode);
                 mRequestCode = -1;
                 mProgress.setVisibility(View.INVISIBLE);
                 mSend.setText(R.string.button_send);

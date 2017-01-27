@@ -16,7 +16,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -28,163 +27,17 @@ import java.util.Set;
 public final class HttpRequest{
     private static final String TAG = "HttpRequest";
 
-    private static final int DEFAULT_REQUEST_TIMEOUT = 10*1000;
-    private static final int DEFAULT_REQUEST_RETRIES = 0;
-    private static final float DEFAULT_RETRY_BACKOFF = 1.5f;
-
-    private static final String DEFAULT_ENCODING = "UTF-8";
-
 
 
     //requestCode -> HttpRequest
     private static Map<Integer, HttpRequest> sRequestMap;
 
 
-    /*----------------------------------------------------------*
-     * HELPER METHODS. THESE CREATE REQUESTS OF SPECIFIC TYPES. *
-     *----------------------------------------------------------*/
-
-    /**
-     * Makes a GET request using the default timeout.
-     *
-     * @param callback the callback object.
-     * @param url the url to send the request to.
-     * @return a request code.
-     */
-    public static int get(@NonNull RequestCallback callback, @NonNull String url){
-        return request(Method.GET, callback, url, null, DEFAULT_REQUEST_TIMEOUT);
-    }
-
-    /**
-     * Makes a GET request.
-     *
-     * @param callback the callback object.
-     * @param url the url to send the request to.
-     * @param timeout the timeout in milliseconds of this request.
-     * @return a request code.
-     */
-    public static int get(@NonNull RequestCallback callback, @NonNull String url, int timeout){
-        return request(Method.GET, callback, url, null, timeout);
-    }
-
-    /**
-     * Makes a POST request using the default timeout.
-     *
-     * @param callback the callback object.
-     * @param url the url to send the request to.
-     * @param body the body of this request.
-     * @return a request code.
-     */
-    public static int post(@Nullable RequestCallback callback, @NonNull String url,
-                           @NonNull JSONObject body){
-
-        return request(Method.POST, callback, url, body, DEFAULT_REQUEST_TIMEOUT);
-    }
-
-    /**
-     * Makes a POST request.
-     *
-     * @param callback the callback object.
-     * @param url the url to send the request to.
-     * @param body the body of this request.
-     * @param timeout the timeout in milliseconds of this request.
-     * @return a request code.
-     */
-    public static int post(@Nullable RequestCallback callback, @NonNull String url,
-                           @NonNull JSONObject body, int timeout){
-
-        return request(Method.POST, callback, url, body, timeout);
-    }
-
-    /**
-     * Makes a PUT request using the default timeout.
-     *
-     * @param callback the callback object.
-     * @param url the url to send the request to.
-     * @param body the body of this request.
-     * @return a request code.
-     */
-    public static int put(@Nullable RequestCallback callback, @NonNull String url,
-                          @NonNull JSONObject body){
-
-        return request(Method.PUT, callback, url, body, DEFAULT_REQUEST_TIMEOUT);
-    }
-
-    /**
-     * Makes a PUT request.
-     *
-     * @param callback the callback object.
-     * @param url the url to send the request to.
-     * @param body the body of this request.
-     * @param timeout the timeout in milliseconds of this request.
-     * @return a request code.
-     */
-    public static int put(@Nullable RequestCallback callback, @NonNull String url,
-                          @NonNull JSONObject body, int timeout){
-
-        return request(Method.PUT, callback, url, body, timeout);
-    }
-
-    /**
-     * Makes a DELETE request using the default timeout.
-     *
-     * @param callback the callback object.
-     * @param url the url to send the request to.
-     * @return a request code.
-     */
-    public static int delete(@Nullable RequestCallback callback, @NonNull String url){
-        return request(Method.DELETE, callback, url, null, DEFAULT_REQUEST_TIMEOUT);
-    }
-
-    /**
-     * Makes a DELETE request.
-     *
-     * @param callback the callback object.
-     * @param url the url to send the request to.
-     * @param timeout the timeout in milliseconds of this request.
-     * @return a request code.
-     */
-    public static int delete(@Nullable RequestCallback callback, @NonNull String url, int timeout){
-        return request(Method.DELETE, callback, url, null, timeout);
-    }
-
-    /**
-     * Cancels a request if the request is still active.
-     *
-     * @param requestCode the request code of the request to cancel.
-     * @return true if the request was cancelled successfully, false otherwise.
-     */
-    public static boolean cancel(int requestCode){
-        if (sRequestMap != null){
-            HttpRequest request = sRequestMap.remove(requestCode);
-            if (request != null){
-                //request.mRequest.cancel();
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     /*--------------------------------------------------------------------------------*
      * THE FOLLOWING METHOD, request(), IS THE CORE OF THIS CLASS. EVERY REQUEST TYPE *
      * METHOD SHOULD WRAP IT TO CREATE THE DESIRED REQUEST.                           *
      *--------------------------------------------------------------------------------*/
-
-    /**
-     * Creates a request with the default timeout.
-     *
-     * @param method the HTTP method of this request.
-     * @param callback the callback object.
-     * @param url the url to make the request to.
-     * @param body the body of the request.
-     * @return the request code.
-     */
-    public static int request(Method method, @Nullable RequestCallback callback, @NonNull String url,
-                              @Nullable JSONObject body){
-
-        return request(method, callback, url, body, DEFAULT_REQUEST_TIMEOUT);
-    }
 
     /**
      * Creates a request.
@@ -208,8 +61,6 @@ public final class HttpRequest{
             sRequestMap = new HashMap<>();
         }
         sRequestMap.put(requestCode, request);
-
-        url = processUrl(url);
 
         //Request a string response from the provided URL
         StringRequest volleyRequest = new StringRequest(
@@ -253,7 +104,7 @@ public final class HttpRequest{
             @Override
             protected Response<String> parseNetworkResponse(NetworkResponse response){
                 try{
-                    String utf8String = new String(response.data, DEFAULT_ENCODING);
+                    String utf8String = new String(response.data, "UTF-8");
                     return Response.success(utf8String, HttpHeaderParser.parseCacheHeaders(response));
                 }
                 catch (UnsupportedEncodingException uex){
@@ -263,28 +114,12 @@ public final class HttpRequest{
         };
 
         //Create and set the retry policy
-        volleyRequest.setRetryPolicy(new DefaultRetryPolicy(timeout, DEFAULT_REQUEST_RETRIES, DEFAULT_RETRY_BACKOFF));
+        volleyRequest.setRetryPolicy(new DefaultRetryPolicy(timeout, 0, 1));
 
         //Set the volley request to the request object
         //request.setRequest(volleyRequest);
 
         return requestCode;
-    }
-
-    /**
-     * Adds the parameters to the URL
-     *
-     * @param url the url to append the parameters to.
-     * @return the processed url.
-     */
-    private static String processUrl(@NonNull String url){
-        /*if (sRequestUrlParams != null){
-            for (Map.Entry<String, String> parameter : sRequestUrlParams.entrySet()){
-                url += !url.contains("?") ? "?" : "&";
-                url += parameter.getKey() + "=" + parameter.getValue();
-            }
-        }*/
-        return url;
     }
 
     /**
@@ -308,7 +143,7 @@ public final class HttpRequest{
     //This are the attributes that are required for a request to be fired
     private final Method method;
     private final String url;
-    private RequestCallback callback;
+    private final int requestCode;
 
     private int timeout;
     private int retries;
@@ -320,7 +155,6 @@ public final class HttpRequest{
     private String encoding;
 
     private int attempt;
-
 
     private boolean executed;
 
@@ -334,10 +168,11 @@ public final class HttpRequest{
     HttpRequest(@NonNull Method method, @NonNull String url){
         this.method = method;
         this.url = url;
+        requestCode = RequestCodeGenerator.generate();
 
-        timeout = HttpRequests.requestTimeout;
-        retries = HttpRequests.requestRetries;
-        backoff = HttpRequests.retryBackoff;
+        timeout = HttpRequests.getDefaultRequestTimeout();
+        retries = HttpRequests.getDefaultRequestRetries();
+        backoff = HttpRequests.getDefaultRetryBackoff();
         attempt = 0;
 
         urlParameters = new HashMap<>();
@@ -351,7 +186,7 @@ public final class HttpRequest{
             headers.put(entry.getKey(), entry.getValue());
         }
 
-        encoding = HttpRequests.encoding;
+        encoding = HttpRequests.getDefaultEncoding();
 
         executed = false;
     }
@@ -405,11 +240,29 @@ public final class HttpRequest{
         return this;
     }
 
-    public HttpRequest setCallback(@NonNull RequestCallback callback){
-        if (!executed){
-            this.callback = callback;
+    public int execute(){
+        return requestCode;
+    }
+
+    public void cancel(){
+
+    }
+
+    Method getMethod(){
+        return method;
+    }
+
+    String getUrl(){
+        String url = this.url;
+        for (Map.Entry<String, String> parameter:urlParameters.entrySet()){
+            url += url.contains("?") ? "&" : "?";
+            url += parameter.getKey() + "=" + parameter.getValue();
         }
-        return this;
+        return url;
+    }
+
+    int getRequestCode(){
+        return requestCode;
     }
 
 
